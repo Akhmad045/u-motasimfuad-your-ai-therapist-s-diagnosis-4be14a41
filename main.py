@@ -90,7 +90,8 @@ def entry_text():
 def self_test():
     """Verify every contender is gate-clean, all 12 are distinct, the pick
     sits inside the winning size band (62-140 bytes, the one-liner top-10
-    range), and a round-tripped pick matches byte for byte."""
+    range), the pick is exactly one sentence (the brief asks for a single
+    diagnosis line), and a round-tripped pick matches byte for byte."""
     bad = [i + 1 for i, c in enumerate(CONTENDERS) if not gate(c)]
     if bad:
         print(f"SELF-TEST FAIL: contenders failing the gate: {bad}")
@@ -103,6 +104,13 @@ def self_test():
         print(f"SELF-TEST FAIL: pick is {len(pick.encode('utf-8'))} bytes, "
               f"outside the 62-140 winning size band")
         return 1
+    # One diagnosis, one sentence: exactly one sentence terminator, at
+    # the end of the line. (Checked on the pick only — several drafted
+    # contenders run to two sentences and were passed over for it.)
+    terminators = sum(pick.count(t) for t in ".!?")
+    if terminators != 1 or not pick.endswith((".", "!", "?")):
+        print("SELF-TEST FAIL: pick is not exactly one sentence")
+        return 1
     tmp = "/tmp/ai-therapist-self-test.txt"
     with open(tmp, "w", encoding="utf-8", newline="") as fh:
         fh.write(pick)
@@ -114,7 +122,7 @@ def self_test():
     print(f"SELF-TEST OK: {len(CONTENDERS)} contenders gate-clean and "
           f"distinct; pick #{PICK + 1} is {len(pick)} chars / "
           f"{len(pick.encode('utf-8'))} bytes (inside the 62-140 winning "
-          f"size band), round-trips byte-identical")
+          f"size band), exactly one sentence, round-trips byte-identical")
     return 0
 
 
