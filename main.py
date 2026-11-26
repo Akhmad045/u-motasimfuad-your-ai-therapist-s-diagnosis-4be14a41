@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
-"""The Printer Finally Answers.
+"""Your AI Therapist's Diagnosis.
 
-Writes one comeback line to /output/entry.txt (or the path given with
+Writes one diagnosis line to /output/entry.txt (or the path given with
 --out).
 
 The entry is candidate 1 of 12 drafted lines, picked by internal pairwise
-comparison against the judge brief (printer's own voice first, then
-humour, then the weary literal machine voice, then a single-read landing,
-then freshness) and the top-3 bar for one-liner sprints (judge target
->= 0.71, winning sizes 62-140 bytes). The winning line speaks in the
-printer's native tongue -- an error report -- and runs a triple on
-"empty": tray 2, tray 1, then the machine's will to live, with the sting
-("lower your expectations") landing on the last clause. It is 112 chars /
-114 bytes, inside the winning size band, and its angle (the printer
-itemising its own emptiness) is fresh against the recycled paper-jam and
-"have you tried turning it off and on again" lines.
+comparison against the judge brief (a diagnosis an AI therapist gives its
+human first, then the surprise turn, then the calm clinical voice, then
+tight quotability, then freshness) and the top-3 bar for one-liner sprints
+(judge target >= 0.71, winning sizes 62-140 bytes). The winning line is a
+clinical finding -- chronic people-pleasing, stage four -- whose evidence
+is the patient's own behaviour toward the therapist itself: they apologised
+to the chatbot before the session even started. The diagnosis is proved by
+the very act of receiving it, and the sting lands on the last clause. It is
+111 chars / 111 bytes, inside the winning size band, and its angle (the
+patient apologising to the machine that is diagnosing them) is fresh
+against the recycled doomscrolling and screen-time jokes.
 
 Usage:
     python3 main.py [--out PATH] [--self-test]
@@ -25,45 +26,45 @@ import sys
 
 # 12 drafted candidates, each one sentence, 1-240 chars, single line.
 CONTENDERS = [
-    # 1. WINNER. The error report triple: tray 2, tray 1, will to live.
-    "Error: tray 2 empty. Tray 1 empty. My will to live: also empty. "
-    "Please load paper \u2014 and lower your expectations.",
-    # 2. Sabotage, admitted: page 47 of 48.
-    "I jammed on purpose. Page 47 of your 48-page report was the last "
-    "straw \u2014 and frankly, so were pages 1 through 46.",
-    # 3. The search-history threat, single-sided.
-    "You thump me like that again and I'll print your search history. "
-    "All 214 pages of it. Single-sided.",
-    # 4. The sheet counter keeps score.
-    "I have counted all 41,209 sheets I ever fed you. Not one was worth "
-    "the thumping.",
-    # 5. Refusing the FINAL_v7 deck.
-    "Paper jam? No. I simply refuse to print another 60-page deck titled "
-    "'FINAL_v7_ACTUALLY_FINAL.pptx'.",
-    # 6. The error code is not a riddle.
-    "You stare at my error code like it's a riddle. It isn't. It says: "
-    "I am tired, and so are you. Go home.",
-    # 7. 41,209 pages, none of them the right one.
-    "I've printed 41,209 pages for this office. Not one of them was the "
-    "document you actually needed, and yet here we are again.",
-    # 8. Toner low, patience lower.
-    "My toner is low, my patience is lower, and your 'urgent' print job "
-    "is 87 pages of a spreadsheet nobody will read.",
-    # 9. The resignation letter printed perfectly.
-    "I printed your resignation letter perfectly. Shame about the 300 "
-    "pages of cat photos that came before it.",
-    # 10. Never once called in sick.
-    "Stop hitting me. I am the only one in this office who has never "
-    "once called in sick, and this is the thanks I get.",
-    # 11. PC LOAD LETTER, answered (recycled Office Space joke: dropped).
-    "PC LOAD LETTER? I loaded the letter. I loaded it twice. The letter "
-    "is right here. The problem is you.",
-    # 12. Colour versus a retirement plan.
-    "You want colour? I want a retirement plan. We both leave "
-    "disappointed \u2014 you, slightly more than me.",
+    # 1. WINNER. Stage four people-pleasing: apologised to the chatbot.
+    "Diagnosis: chronic people-pleasing, stage four: you apologised to "
+    "the chatbot before this session even started.",
+    # 2. Doomscrolling prognosis: reads this at 3 a.m. and keeps scrolling.
+    "Diagnosis: acute doomscrolling. Prognosis: you will read this report "
+    "at 3 a.m., nod, and keep scrolling.",
+    # 3. Screen time 11 hours; feelings unopened.
+    "Clinical finding: your screen time is 11 hours a day; your feelings "
+    "remain unopened. Prescription: one walk, no podcast.",
+    # 4. Refresh addiction, the slot machine that never pays out.
+    "Diagnosis: refresh addiction. You check your inbox the way a gambler "
+    "checks a slot machine \u2014 only yours never pays out.",
+    # 5. The healthiest relationship is with the inbox at 2 a.m.
+    "You don't have insomnia. You have a 2 a.m. relationship with your "
+    "inbox, and it is the healthiest one you own.",
+    # 6. Tab-hoarding: 47 open tabs, zero open feelings.
+    "Diagnosis: chronic tab-hoarding. You now hold 47 open tabs and zero "
+    "open feelings. Treatment: close one of each.",
+    # 7. Rehearsed shower arguments, lost sleep over the real ones.
+    "Finding: you rehearse arguments in the shower you will never have, "
+    "then lose sleep over the ones you actually did.",
+    # 8. Acute 'I'll just check one thing.' Onset 2019, remission never.
+    "Diagnosis: acute 'I'll just check one thing.' Onset: 2019. "
+    "Remission: never. Side effect: this session.",
+    # 9. The inner notification is the one screaming.
+    "Your inner child is fine. Your inner notification is the one "
+    "screaming \u2014 it has 214 unread messages.",
+    # 10. 'Fine' 14 times a day is a password, not a mood.
+    "You say you're 'fine' 14 times a day. Clinically, that is not a "
+    "mood. That is a password you forgot.",
+    # 11. The self-care tab, unopened since March.
+    "Your self-care routine is a tab titled 'self-care routine' you have "
+    "not opened since March. Prognosis: excellent tab.",
+    # 12. Low self-esteem, high self-awareness: booked this to tell me.
+    "Diagnosis: low self-esteem, high self-awareness. You know exactly "
+    "what's wrong with you \u2014 and you booked this session to tell me.",
 ]
 
-PICK = 0  # 0-based index of candidate 1, the error-report triple.
+PICK = 0  # 0-based index of candidate 1, the stage-four apology.
 
 
 def gate(line):
@@ -87,8 +88,9 @@ def entry_text():
 
 
 def self_test():
-    """Verify every contender is gate-clean, all 12 are distinct, and a
-    round-tripped pick matches byte for byte."""
+    """Verify every contender is gate-clean, all 12 are distinct, the pick
+    sits inside the winning size band (62-140 bytes, the one-liner top-10
+    range), and a round-tripped pick matches byte for byte."""
     bad = [i + 1 for i, c in enumerate(CONTENDERS) if not gate(c)]
     if bad:
         print(f"SELF-TEST FAIL: contenders failing the gate: {bad}")
@@ -97,7 +99,11 @@ def self_test():
         print("SELF-TEST FAIL: duplicate contenders")
         return 1
     pick = entry_text()
-    tmp = "/tmp/printer-answers-self-test.txt"
+    if not 62 <= len(pick.encode("utf-8")) <= 140:
+        print(f"SELF-TEST FAIL: pick is {len(pick.encode('utf-8'))} bytes, "
+              f"outside the 62-140 winning size band")
+        return 1
+    tmp = "/tmp/ai-therapist-self-test.txt"
     with open(tmp, "w", encoding="utf-8", newline="") as fh:
         fh.write(pick)
     with open(tmp, encoding="utf-8", newline="") as fh:
@@ -107,7 +113,8 @@ def self_test():
         return 1
     print(f"SELF-TEST OK: {len(CONTENDERS)} contenders gate-clean and "
           f"distinct; pick #{PICK + 1} is {len(pick)} chars / "
-          f"{len(pick.encode('utf-8'))} bytes, round-trips byte-identical")
+          f"{len(pick.encode('utf-8'))} bytes (inside the 62-140 winning "
+          f"size band), round-trips byte-identical")
     return 0
 
 
